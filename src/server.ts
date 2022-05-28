@@ -12,6 +12,7 @@ import Post from "./models/Post"
 import bodyParser from "body-parser";
 import { UserInterface } from "./Interfaces/UserInterface"
 import { DatabaseUserInterface } from "./Interfaces/UserInterface";
+import { PostInterface } from "./Interfaces/PostInterface";
 
 dotenv.config();
 
@@ -38,10 +39,10 @@ app.use(passport.session());
 passport.use(
     new LocalStrategy((username, password, done) => {
         User.findOne({ username: username }, (err: Error, foundUser: any) => {
-            if (err) throw err;
+            if (err) console.log(err);
             if (!foundUser) return done(null, false);
             bcrypt.compare(password, foundUser.password, (err, result) => {
-                if (err) throw err;
+                if (err) console.log(err);
                 if (result === true) {
                     return done(null, foundUser);
                 } else {
@@ -104,18 +105,37 @@ app.route("/api/posts/")
     res.send("All posts")
 })
 .post((req,res)=>{
-    res.send("Submitting post...")
+    const newPost = new Post({
+        title:req.body.title,
+        content:req.body.content,
+        category:req.body.category,
+        author:req.body.author,
+        date:req.body.date
+    })
+
+    newPost.save()
+    .then(()=>res.send("Saved successfully"))
 })
 
 app.route("/api/posts/:id")
 .get((req,res)=>{
-    res.send("One post")
+    Post.findById(req.params.id, (err : Error, doc : PostInterface)=>{
+        if(err) res.send(err)
+        else res.send(doc)
+    })
 })
 .put((req,res)=>{
-    res.send("Updating post")
+
+    Post.findByIdAndUpdate(req.params.id, {title:req.body.title, content:req.body.content}, (err : Error, doc : PostInterface)=>{
+        if(err) res.send(err);
+        else res.send("Updated successfully")
+    })
 })
 .delete((req,res)=>{
-    res.send("Deleting post")
+    Post.findByIdAndDelete(req.params.id, (err : Error, doc : PostInterface)=>{
+        if(err) res.send(err);
+        else res.send("Deleted successfully")
+    })
 })
 
 app.listen(4000, () => {

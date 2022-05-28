@@ -1,6 +1,6 @@
-export interface PostInterface{ //structure for making and sending user objects without having to include user ID
+export interface PostInterface{ //structure for making and sending post objects without having to include post ID
     title: string,
-    description: string,
+    content: string,
     category: string,
     author: string,
     date: string,
@@ -8,7 +8,7 @@ export interface PostInterface{ //structure for making and sending user objects 
 
 export interface DatabasePostInterface { //structure for getting from database
     title: string,
-    description: string,
+    content: string,
     category: string,
     author: string,
     date: string,
