@@ -125,7 +125,6 @@ app.route("/api/posts/:id")
     })
 })
 .put((req,res)=>{
-
     Post.findByIdAndUpdate(req.params.id, {title:req.body.title, content:req.body.content}, (err : Error, doc : PostInterface)=>{
         if(err) res.send(err);
         else res.send("Updated successfully")
